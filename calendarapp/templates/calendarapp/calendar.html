@@ -1,0 +1,24 @@
+{% extends 'user/base.html' %}
+
+{% block content %}
+<div>
+    <!--<div class='container d-flex justify-content-center'>-->
+    <a class="btn btn-light m-2 p-2" style="color: white; border-radius:15px; background-image: linear-gradient(to top right,#EF6DA0,#EE8E6B);" href="{% url 'calendarapp:calendar' %}?{{ prev_month }}"> << Previous Month </a>
+	<a class="btn btn-light m-2 p-2" style="color: white; border-radius:15px; background-image: linear-gradient(to top right,#EF6DA0,#EE8E6B);"  href="{% url 'calendarapp:calendar' %}?{{ next_month }}"> Next Month >> </a>
+    {% if request.user.profile.is_cr %}
+    <a class="btn border border-light m-2 shadow p-2" style="color: white; border-radius:15px; background-image:linear-gradient(to top right, #8360c3 , #2ebf91); " href="{% url 'calendarapp:event_new' %}"> + New Event </a>
+    <a class="btn border border-light shadow p-2" style="color: white; border-radius:15px; background-image: linear-gradient(to top right, #8360c3 , #2ebf91);" href="{% url 'calendarapp:add_news' %}">+ Add News</a>
+    {% endif %}
+    <!--</div>-->
+    <h3 class="d-flex justify-content-center mt-3">Calendar</h3>
+    <div class="d-flex justify-content-center shadow p-4">
+    {{calendar|safe}}
+    </div>
+    <div class='shadow p-3 m-3' style='align-content:center;'>
+        <h4>Legend</h4>
+        <p><button type="button" class="btn btn-danger" style='height:40px;width:40px;'><span style='font-style:bold;font-size:2.5vh;'>5</span></button><i class="fas fa-arrow-right ml-4"></i> Event Date is Crossed</p><br>
+        <p><button type="button" class="btn btn-success" style='height:40px;width:40px;'><span style='font-style:bold;font-size:2.5vh;'>10</span></button><i class="fas fa-arrow-right ml-4"></i> Upcoming Event (Click on the date to see the events)</p><br>
+        <p><button type="button" class="btn btn-primary" data-toggle="modal" data-target='#day{day}' disabled style='height:40px;width:40px;'><span style='font-style:bold;font-size:2.5vh;'>15</span></button><i class="fas fa-arrow-right ml-4"></i> No Events</p><br>
+    </div>
+    </div>
+{% endblock content %}

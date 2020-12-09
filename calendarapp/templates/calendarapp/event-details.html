@@ -1,0 +1,202 @@
+{% extends 'user/base.html' %}
+{% load bootstrap4 %}
+
+{% block content %}
+    <div class="container">
+        <div class="clearfix">
+          {% if request.user.profile.is_cr %}
+            <a class="btn btn-primary float-right mr-2" style="border-radius:5px;" href="{% url 'calendarapp:event_edit' event.pk %}"> Edit Event </a>
+          {% endif %}
+        </div>
+        <div id="reload_status">
+        {% if request.user in eventmembers %}
+            <p class="btn btn-success shadow-lg" style="border-radius:5px;">
+             <i class="fa fa-info-circle"></i> You are a participant in this CRD
+             </p>
+        {% else %}
+            <p class="btn btn-danger shadow-lg" style="border-radius:5px;">
+             <i class="fa fa-info-circle"></i> You are not a participant in this CRD
+             </p>
+        {% endif %}
+        {% if request.user not in eventmembers and event.disable_add == False%}
+                {% if request.user.profile.cgpa > event.cgpa %}
+                <table class="table table-bordered shadow">
+                    <thead>
+                        <tr>
+                          <th style="width: 10px">#</th>
+                          <th>Roll No</th>
+                          <th>Name</th>
+                          <th>Section</th>
+                          <th>CGPA</th>
+                          <th>Percentage</th>
+                          <th>Add</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <tr role="row">
+                            <td>1.</td>
+                            <td><a href="{% url 'profile_detail' request.user.username %}">{{ request.user.profile.roll_no }}</a></td>
+                            <td>{{ request.user.first_name}}</td>
+                            <td>{{ request.user.profile.section}}</td>
+                            <td>{{ request.user.profile.cgpa}}</td>
+                            <td>{{ request.user.profile.percentage}}</td>
+                            <td>
+                              {% csrf_token %}
+                              {% if request.user in eventmembers %}
+                                <p>Applied</p>
+                              {% else %}
+                                <input type="checkbox" class="add" name="{{user.id}}" id="user{{user.id}}"  user_id='{{user.id}}' event_id='{{event.id}}'>
+                                <label for="user{{user.id}}">Participate</label>
+                              {% endif %}
+                            </td>
+                            <td id="load">{% if request.user in eventmembers %}Done!{%else%}Click on participate<br> to start{%endif%}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <small>Contact CR for any info.</small><br>
+        {% else %}
+                    <p class="shadow p-2 m-4">Sorry! You didn't meet Placement criteria! Checkout other placements</p>
+        {% endif %}
+        {% else %}
+                    <p class="shadow p-2 m-4 text-center">Cannot enter the event. Only for selected participants!</p>
+        {%endif %}
+        </div>
+        <div class="row">
+        <div class="col-md-8 mr-3 mb-3 pt-3 shadow-lg"  style="border-radius:5px;">
+            <h5>Placement Name: {{ event.title }} <p class="badge badge-success">{{event.next_level}}</p></h5>
+            <p>From <span>{{ event.start_time }}</span> To <span >{{ event.end_time }}</span></p>
+            <hr>
+            <p>Description: {{ event.description }}</p>
+            <p class="badge badge-secondary">Total Participants {{eventmembers.count}}</p>
+            {% if request.user.profile.is_cr %}
+            <a href="{% url 'calendarapp:export_presentees_csv' event.id %}" class="btn btn-light m-3 ">Download Participants list</a>
+            <a href="{% url 'calendarapp:export_absentees_csv' event.id %}" class="btn btn-light m-3">Download Absentees list</a>
+            {% endif %}
+        </div>
+        <div class="col-md-3 p-3 mb-3 shadow-lg" style="border-radius:5px;">
+            <h5 class="text-center">Placement Criteria</h5>
+            <hr>
+            <p>Inter: {{event.inter}}</p>
+            <p>Tenth: {{event.tenth}}</p>
+            <p>Graduation: {{event.cgpa}}</p>
+        </div>
+        </div>
+        <hr>
+        <div class="clearfix">
+            <h4 class="left" > Members of this Event</h4>
+        </div>
+        <table class="table table-bordered shadow-lg" id="reload_students">
+          <thead>
+              <tr>
+                <th style="width: 10px">#</th>
+                <th>Roll No</th>
+                <th>Name</th>
+                <th>CGPA</th>
+                <th>Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in eventmembers %}
+              <tr role="row">
+                  <td>{{ forloop.counter }}</td>
+                  <td><a href="{% url 'profile_detail' user.username%}">{{ user.profile.roll_no }}</a></td>
+                  <td>{{ user.first_name }}</td>
+                  <td>{{ user.profile.cgpa}}</td>
+                  <td>{{ user.profile.percentage}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+      </table>
+      {% if request.user.profile.is_cr %}
+        <h4>Sort and Add</h4>
+        <small>Presorted {{request.user.profile.section}} section</small>
+        <div class="mb-4">
+          {% if users.form %}
+          <form method='GET' class="m-5 form-inline ">
+            {% bootstrap_form users.form %}&nbsp;&nbsp;
+            <button class="btn btn-dark shadow">Search</button>
+          </form>
+          {% endif %}
+        </div>
+        <table class="table table-bordered shadow-lg">
+            <thead>
+                <tr>
+                  <th style="width: 10px">#</th>
+                  <th>Roll No</th>
+                  <th>Name</th>
+                  <th>CGPA</th>
+                  <th>Percentage</th>
+                  <th>Add</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for k in users.qs %}
+                <tr role="row">
+                    <td>{{ forloop.counter }}</td>
+                    <td><a href="{% url 'profile_detail' k.user.username%}">{{ k.roll_no }}</a></td>
+                    <td>{{ k.user.first_name}}</td>
+                    <td>{{ k.cgpa}}</td>
+                    <td>{{ k.percentage}}</td>
+                    <td>
+                      {% csrf_token %}
+                      {% if k.user in eventmembers %}
+                        <input type="checkbox" class="add" name="{{k.id}}" id="user{{k.user.id}}"  user_id='{{k.user.id}}' event_id='{{event.id}}' checked></input>
+                      {% else %}
+                        <input type="checkbox" class="add" name="{{k.id}}" id="user{{k.user.id}}"  user_id='{{k.user.id}}' event_id='{{event.id}}'></input>
+                      {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+        </table>
+        {% endif %}
+<small>This web page reloads data automatically. No need to reload page after confirming your CRD participation.</small>
+    </div>
+    <div id="notification" class="fixed-bottom col-md-5">
+     </div>
+{% endblock %}
+
+{% block javascript %}
+<script  type="text/javascript">
+$('.add').click(function(){
+    $.ajax({
+          type:'POST',
+          url:'/event/add_student_to_event/',
+          data:{
+            'user_id':$(this).attr('user_id'),
+            'event_id':$(this).attr('event_id'),
+            'csrfmiddlewaretoken':$('input[name=csrfmiddlewaretoken]').val(),
+          },
+          beforeSend:function(){
+              console.log("hello");
+              $('#notification').html(`<div class="alert alert-warning alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                     Adding you to CRD...Please wait...
+                     <h4 class="alert-heading">Wait for a second!</h4>
+                      <p>Searching for you in vast CR Space!</p>
+                      <hr>
+                      <p class="mb-0">Found You! Making Changes...hang in there.</p>
+                 </div>`);
+          },
+          complete: function () {
+               $("#reload_students").load(" #reload_students");
+               $("#reload_status").load(" #reload_status");
+            },
+          success:function(data){
+              $('#load').html('<p>Done!</p>');
+              $('#notification').html(`<div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                     <h4 class="alert-heading">Verification</h4>
+                      <p>Aww yeah, you successfully completed registration process for this CRD.</p>
+                      <hr>
+                      <p class="mb-0">Follow CR Space Blog for updates</p>
+                  </div>`);
+              $("#notification").fadeTo(5000, 500).slideUp(500, function(){
+              $("#notification").slideUp(500);
+          });
+          }});
+  });
+
+</script>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% load static %}
+{% load humanize %}
+{% load bootstrap4 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="icon" href="/media/main_icon.png">
+    <script src="https://kit.fontawesome.com/2f18b7f943.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville&display=swap" rel="stylesheet">
+  <title>CR Space</title>
+  {% block extrahead %}{% endblock extrahead %}
+  {% block extra_js %}{% endblock extra_js %}
+</head>
+
+<body style="font-family: 'Merriweather', serif;">
+<header class="site-header">
+    <nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light" >
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img src='/media/main_icon.png' height="45"> &nbsp;
+        </a>
+        <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#navbarToggle"
+          aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+          <div class="navbar-nav mr-auto">
+            <a class="nav-item nav-link" href="{% url 'calendarapp:calendar' %}" > Events</a>
+            <a class="nav-item nav-link" href="{% url 'blog-home' %}"> Blog</a>
+            <a class="nav-item nav-link" href="{% url 'contact-home' %}"> Contacts</a>
+            <a class="nav-item nav-link" href="{% url 'new_request' %}">Create Attendance Request</a>
+            {% if request.user.is_authenticated %}
+                <div class="dropdown show">
+                  <a class="nav-item nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  GTeams &#8595
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="{% url 'team-detail' request.user.profile.team.slug %}">Team Details </a>
+                    <a class="dropdown-item" href="{% url 'todo:mine' %}">My Tasks</a>
+                    <a class="dropdown-item" href="{% url 'meeting-create' %}"> Create Meeting </a>
+                    <a class="dropdown-item" href="{% url 'todo:list_detail' request.user.profile.team.task_list.id request.user.profile.team.task_list.slug %}">Team Tasks <sup class='badge badge-danger'>new</sup> </a>
+                  </div>
+                </div>
+            {% else %}
+            {% endif %}
+            {% if request.user.is_authenticated %}
+                {% if request.user.profile.is_cr %}
+                    <div class="dropdown show">
+                      <a class="nav-item nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      GCR_Tasks &#8595
+                      </a>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="{% url 'calendarapp:event_new' %}"> New Event </a>
+                        <a class="dropdown-item" href="{% url 'cr_requests' %}">Attendance Requests</a>
+                        <a class="dropdown-item" href="{% url 'calendarapp:add_news' %}" > Add News</a>
+                        <a class="dropdown-item" href="{% url 'todo:lists' %}">Todo Lists</a>
+                        <a class="dropdown-item" href="{% url 'all_teams' %}">All Teams Info</a>
+                      </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+          </div>
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if request.user.is_authenticated %}
+            <div class="dropdown show">
+              <a class="nav-item nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                  <a class="dropdown-item" href="{% url 'profile' %}" ><img class="w-5" src="{{ user.profile.image.url }}" alt="Zoro" style="width:30px;"> Profile</a>
+                  <a class="dropdown-item" href="{% url 'profile_detail' request.user.username%}">Academic Profile</a>
+                  <a class="dropdown-item" href="{% url 'account_settings' %}">Settings</a>
+                  <a class="dropdown-item" href="{% url 'account_password' %}">Change Password</a>
+                  <small class="dropdown-item">Last Login: {{request.user.last_login}} IST</small>
+                  <small class="dropdown-item">Users Online : {{ request.online_now |length }}</small>
+                  <small class="dropdown-item"><i class="fa fa-info-circle"></i> logged in as {{user.profile.section}} CR</small>
+                  <a class="dropdown-item text-danger" href="{% url 'account_logout' %}">Logout</a>
+              </div>
+            </div>
+          </div>
+            {% else %}
+            <a class="nav-item nav-link" href="{% url 'account_login' %}"> LogIn </a>
+            <a class="nav-item nav-link" href="{% url 'account_signup' %}"> SignUp </a>
+            {% endif%}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main role="main" class="container">
+        <br><br><br>
+        <div id='messages'>
+          {% include 'user/messages.html' %}
+        </div>
+        <div style='display: grid;
+            text-align: center;'>
+            {{main_calendar|safe}}
+        </div>
+        {% block auth %}
+        {% endblock %}
+        {% block  postman_menu %}
+        {% endblock %}
+        {% block content %}
+        {% endblock content %}
+    </main>
+    {% include 'user/footer.html' %}
+    {% include 'user/scripts.html' %}
+  <br><br><br>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  {% block javascript %}
+  {% endblock %}
+    <script src="https://gitbotpress.herokuapp.com/assets/modules/channel-web/inject.js"></script>
+    <script>
+      window.botpressWebChat.init({ host: 'https://gitbotpress.herokuapp.com/', botId: 'gitam' })
+    </script>
+</body>
+</html>

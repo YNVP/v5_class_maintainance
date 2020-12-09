@@ -1,0 +1,16 @@
+{% extends 'user/base.html' %}
+
+{% block title %}
+Event
+{% endblock %}
+
+{% block content %}
+<small>Request with valid proof will be granted. Proof image must contain company name, your email, time of event.</small>
+<form method="POST" class="d-flex justify-content-center align-items-center" enctype="multipart/form-data">
+  {% csrf_token %}
+  <table class="p-3">
+    {{ form }}
+    <tr><td colspan="2"><button type="submit" class="btn btn-info right"> Submit </button></td></tr>
+  </table>
+</form>
+{% endblock %}

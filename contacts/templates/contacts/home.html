@@ -1,0 +1,71 @@
+{% extends "user/base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+{% block content %}
+<div class="d-flex justify-content-between container rounded p-2">
+  <h4 class="text-dark lead">GIT Contacts</h4>
+  {% if request.user.profile.is_cr %}
+  <abbr title="Create New Contact"><a class="btn btn-dark shadow rounded" href="{% url 'contact-create' %}"><i class="fas fa-plus"></i> &nbsp;New Contact</a></abbr>
+  {%endif%}
+</div>
+<div class="container">
+    {% if contacts.count > 0 %}
+    <h5 class="text-center">{{request.user.profile.section}} Contacts</h5>
+    {% for post in contacts %}
+        {% if forloop.counter|divisibleby:2 %}
+        <article class="shadow mb-2 p-4 border border-white" style="color:white;border-radius:15px; background-image:linear-gradient(to left bottom , #06d6a0 5%, #118ab2 37%); ">
+          <button class="float-right btn btn-outline-light" onclick="copyTextToClipboard('{{post.number}}')"><i class="far fa-copy"></i></button>
+          <div class="media-body media1 p-2">
+            <h4 style="height: auto;font-size: larger;">Faculty Name: {{ post.name }} | Subject: {{post.subject}}</h4>
+            <h1 class="p-2 font-weight-bold" id="{{post.id}}" style="letter-spacing: 2px;">{{post.number}}</h1>
+          </div>
+        </article>
+        {% else %}
+        <article class="shadow mb-2 p-4 border border-white" style="color:white;border-radius:15px;  background-image: linear-gradient(to top right, #8360c3 , #2ebf91); ">
+          <button class="float-right btn btn-outline-light" onclick="copyTextToClipboard('{{post.number}}')"><i class="far fa-copy"></i></button>
+          <div class="media-body media1 p-2">
+            <h4 style="height: auto;font-size: larger;">Faculty Name: {{ post.name }} | Subject: {{post.subject}}</h4>
+            <h1 class="p-2 font-weight-bold" id="{{post.id}}" style="letter-spacing: 2px;">{{post.number}}</h1>
+          </div>
+        </article>
+        {% endif %}
+    {% endfor %}
+    {% else %}
+        <small>Contact CR to add contacts or update contacts</small>
+    {% endif %}
+  </div>
+<script>
+function copyTextToClipboard(text) {
+  var textArea = document.createElement("textarea");
+  textArea.value = text
+  document.body.appendChild(textArea);
+  textArea.select();
+
+  try {
+    var successful = document.execCommand('copy');
+    var msg = successful ? 'successful' : 'unsuccessful';
+    console.log('Copying text command was ' + msg);
+    alert('Number copied!');
+  } catch (err) {
+    console.log('Oops, unable to copy');
+    alert('Number copy unsuccessful :(');
+  }
+
+  document.body.removeChild(textArea);
+}
+// function copyTextFromElement(elementID) {
+//   let element = document.getElementById(elementID); //select the element
+//   let elementText = element.textContent;
+//   element.select();
+//   element.setSelectionRange(0, 99999);
+//   copyText(elementText); //use the copyText function below
+// }
+
+// //If you only want to put some Text in the Clipboard just use this function
+// // and pass the string to copied as the argument.
+// function copyText(text) {
+//   navigator.clipboard.writeText(text);
+//   alert('Phone Number copied!');
+// }
+</script>
+{% endblock content %}

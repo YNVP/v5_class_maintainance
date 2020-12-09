@@ -1,0 +1,22 @@
+{% extends "user/base.html" %}
+{% load comment_tags %}
+{% block content %}
+{% load humanize %}
+  <div class="container" style="font-size:xx-large;font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;font-weight: 200;">
+    <h2>Attendance Request Detail View</h2>
+    <h4> Company: {{ r.company }}</h4>
+    <h5>Student Roll No: {{r.user.username}}</h5>
+    <h5>Student Name: {{r.user.first_name}}</h5>
+    <h5>Request Start Time: {{r.start_time}}</h5>
+    <h5 > Request Type: {{r.request_type}}</h5>
+    <h5>Attatched Image</h5>
+    <img class="w-10 d-flex justify-content-center" src="{{ r.image.url }}"><br>
+    {% if r.granted == True %}
+        <h5 class="btn btn-success shadow" >Request Granted</h5>
+     {% else %}
+           <h5 class=" btn btn-warning shadow" >Under Process</h5>
+     {% endif %}
+    <small class="text-muted" style="font-size: small;">{{ r.start_time|date:"F d, Y" }}</small>
+  </div>
+
+{% endblock %}

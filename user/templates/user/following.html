@@ -1,0 +1,9 @@
+{% extends 'user/base.html' %}
+{% load friendshiptags %}
+
+{% block content %}
+<div class="container">
+<h5><strong>Authors you are following :</strong></h5>
+{% following request.user %}
+</div>
+{% endblock content %}

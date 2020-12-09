@@ -1,0 +1,18 @@
+{% extends "user/base.html" %}
+{% load bootstrap4 %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Team Creation / Updation Form</legend>
+                {{ form.media }}
+                {% bootstrap_form form %}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Create / Update Team</button>
+            </div>
+        </form>
+        <small>*If there are many members in team it'll take time to send mails for all. Please wait till page reaches home page.</small>
+    </div>
+{% endblock content %}

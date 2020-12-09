@@ -1,0 +1,83 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% load bootstrap4 %}
+{% load humanize %}
+{% load qr_tags %}
+{% block content %}
+<div class="row">
+  <div class="col-md-3 m-3 p-2 shadow" style="color: white; border-radius:15px; background-image:linear-gradient(to bottom left, #8360c3 , #2ebf91); ">
+      <div class="card-body">
+        <div class="author text-center">
+          <div class="p-3 m-2" style="background-color:white;">
+            <img class="w-50" src="{{ user.profile.image.url }}" alt="Profile Img" style="padding:10px;">
+          </div>
+          <p class="description lead" style="font-weight:bold;">
+            {{ user.first_name }}
+          <div class="container rounded shadow-sm">
+            <p>
+              <small class="">@ {{user.username}}</small>
+            </p>
+            {% qr_from_object user.profile "s" %}
+             <br>
+              <small>scan to open student <br> profile on mobile</small>
+          </div>
+          </p>
+        </div>
+      </div>
+  </div>
+  <div class="col-md-8 shadow-lg m-3 p-3" style="color: white; border-radius:15px; background-image:linear-gradient(to top left, #2ebf91 , #8360c3); ">
+    <div class="container m-1">
+      <div style="color:white;">
+            <h5 style="color:white;">Information</h5>
+            <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <p class="lead">Roll Number</p> <p class="font-weight-bold">{{user.profile.roll_no}}</p>
+            <p class="lead">Name</p> <p class="font-weight-bold">{{user.first_name}}</p>
+            <p class="lead">Section</p> <p class="font-weight-bold">{{user.profile.section}}</p>
+            <p class="lead">Tenth CGPA</p> <p class="font-weight-bold">{{user.profile.tenth}}</p>
+            <p class="lead">Inter Percentage</p> <p class="font-weight-bold">{{user.profile.inter}}</p>
+          </div>
+          <div class="col-md-6 justify-items-center">
+            <p class="lead">CGPA</p> <p class="font-weight-bold">{{user.profile.cgpa}}</p>
+            <p class="lead">Backlogs</p> <p class="font-weight-bold">{{user.profile.backlogs}}</p>
+            <p class="lead">Drives attempted</p> <p class="font-weight-bold">{{user.profile.current_events.count}}</p>
+            <p class="lead">Selected</p> <p class="font-weight-bold">{{user.profile.is_selected}}</p>
+          </div>
+        </div>
+
+      </div>
+      <br>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock content %}
+
+{% block javascript %}
+<script type="text/javascript">
+  $('#foll').click(function () {
+    $.ajax({
+      type: 'POST',
+      url: '/follow/',
+      data: {
+        'follower_id': '{{user.id}}',
+        'action':$('#foll').attr('value'),
+        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+      },
+      success: function (data) {
+        var icon = $('#foll');
+        if (data=='f'){
+          $('#foll').html("Follow");
+          icon.attr('value', 'f');
+        }
+        else{
+          $('#foll').html("Unfollow");
+          icon.attr('value', 'u');
+        }
+        }
+    });
+  });
+</script>
+{% endblock %}

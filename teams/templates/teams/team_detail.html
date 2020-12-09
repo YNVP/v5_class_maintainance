@@ -1,0 +1,48 @@
+{% extends "user/base.html" %}
+{% block content %}
+{% load humanize %}
+    <img src="{{team.image.url}}" alt="" class=" float-right" style="width:100px;" title="team_icon">
+    <h5>Team Name: {{team.team_name}} </h5>
+    <h6>Key: {{team.slug}}</h6>
+    <h6>Project Name: {{team.project_name}}</h6>
+    <h6>Project Field: {{team.project_field}}</h6>
+    <h6>Project Level: {{team.project_level}}</h6>
+    <h6>Team Instructor: {{team.team_instructor}}</h6>
+    <h6>Team Leader: {{team.team_leader}}</h6>
+    <a class="btn btn-dark shadow m-2 border border-light" style="border-radius:25px;"  href="{% url 'team-detail' request.user.profile.team.slug %}">Team Details </a>
+    <a class="btn btn-dark shadow m-2 border border-light" style="border-radius:25px;"  href="{% url 'team-update' request.user.profile.team.slug %}">Team Update </a>
+    <a class="btn btn-dark shadow m-2 border border-light" style="border-radius:25px;"  href="{% url 'todo:list_detail' team.task_list.id team.task_list.slug %}">TEAM TASKS </a><sup class='p-1 shadow'>new</sup>
+    <table  class="table table-bordered shadow font-weight-bold" style="border-radius:15px;">
+       <caption>Team Details</caption>
+       <thead style="color: white; background-image: linear-gradient(to top right, #8360c3 , #2ebf91);">
+        <th>Student Name</th>
+        <th>Roll Number</th>
+       </thead>
+       <tbody>
+           {% for u in team.team_members.all %}
+           <tr>
+               <td>{{u.first_name}}</td>
+               <td>{{u.username}}</td>
+           </tr>
+           {% endfor %}
+       </tbody>
+    </table>
+    <h5>Scheduled Meetings</h5>
+    <table  class="table table-bordered shadow font-weight-bold" style="border-radius:15px;">
+       <caption>Scheduled Meetings <small>Hover on meeting name to know agenda</small></caption>
+       <thead style="color: white; background-image: linear-gradient(to top right, #8360c3 , #2ebf91);">
+        <th>Meeting Name</th>
+        <th>Start Time</th>
+        <th>Link</th>
+       </thead>
+       <tbody>
+           {% for meeting in team.meetings.all %}
+           <tr>
+               <td title="{{meeting.agenda}}">{{meeting.meeting_name}}</td>
+               <td>{{meeting.start_time}}</td>
+               <td>{{meeting.link}}</td>
+           </tr>
+           {% endfor %}
+       </tbody>
+    </table>
+{% endblock content %}

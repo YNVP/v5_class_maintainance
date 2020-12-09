@@ -1,0 +1,26 @@
+{% extends "user/base.html" %}
+{% block content %}
+{% load humanize %}
+<h5 class="text-center">Mini-Project Team Details</h5>
+{% for team in teams %}
+    <table  class="table table-bordered shadow font-weight-bold" style="border-radius:15px;">
+       <caption>Team Details {{forloop.counter}}</caption>
+       <thead>
+        <th>#</th>
+        <th>Student Name</th>
+        <th>Roll Number</th>
+       </thead>
+       <tbody>
+
+           {% for u in team.team_members.all %}
+           <tr>
+               <td>{{forloop.counter}}</td>
+               <td>{{u.first_name}}</td>
+               <td>{{u.username}}</td>
+           </tr>
+           {% endfor %}
+
+       </tbody>
+    </table>
+    {% endfor %}
+{% endblock content %}

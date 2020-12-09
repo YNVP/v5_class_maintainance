@@ -1,0 +1,22 @@
+<div class="">
+<div class="p-3">
+<h5>Latest News</h5>
+<hr>
+</div>
+<div class="p-2" style="height: 150px;overflow-y:scroll;">
+{% if latest_news %}
+        {%for post in latest_news %}
+            <p class="shadow p-2 border border-warning">&#9930; {{post.post_data}}<sup class="badge badge-danger">new</sup><span class='ml-4'>&nbsp;&nbsp;</span><br></p>
+        {%endfor%}
+{%endif%}
+{% if news %}
+        {%for post in news %}
+           <p class="shadow p-2 border border-warning">&#9930; {{post.post_data}}<br></p>
+        {%endfor%}
+{%endif%}
+{% if not news and not latest_news %}
+    There are no news as of now please add anything to show.
+{%endif%}
+</div>
+</div>
+<br><br>

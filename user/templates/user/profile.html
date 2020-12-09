@@ -1,0 +1,30 @@
+{% extends "user/base.html" %}
+{% load bootstrap4 %}
+{% block content %}
+    <div class="content-section">
+      <div class="row shadow m-3 p-3">
+        <div class="col-md-3">
+        <img class="w-10 d-flex justify-content-center" src="{{ user.profile.image.url }}"><br>
+        </div>
+        <div class="col-md-9">
+            <h2 class="account-heading">{{ user.first_name }}</h2>
+            <h4 class="account-heading">{{ user.username }}</h4>
+            <h5 class="account-heading">{{ user.profile.section }} | {{ user.profile.cgpa }}</h5>
+            <h6>-{{user.email}}</h6>
+        </div>
+      </div>
+      <div class="container shadow m-3 p-3">
+      <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <fieldset class="form-group">
+              <legend class="border-bottom mb-4">Profile Info</legend>
+              {% bootstrap_form u_form %}
+              {% bootstrap_form p_form %}
+          </fieldset>
+          <div class="form-group">
+              <button class="btn btn-outline-info" type="submit">Update</button>
+          </div>
+      </form>
+      </div>
+    </div>
+{% endblock content %}
